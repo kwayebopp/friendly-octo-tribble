@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  db:
+    image: quay.io/tembo/pg17-pgmq:latest
+    container_name: hyperdrip-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=hyperdrip
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+
+  queue:
+    image: eichenroth/pgmq-rest:latest
+    container_name: hyperdrip-queue
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=hyperdrip
+      - DB_USER=postgres
+      - DB_PORT=5432
+    depends_on:
+      - db

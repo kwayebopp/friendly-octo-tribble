@@ -1,0 +1,4 @@
+DROP DATABASE IF EXISTS hyperdrip_test;
+CREATE DATABASE hyperdrip_test;
+
+CREATE EXTENSION IF NOT EXISTS pgmq;
