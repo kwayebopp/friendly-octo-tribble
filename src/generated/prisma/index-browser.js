@@ -126,6 +126,11 @@ exports.Prisma.LeadScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   notes: 'notes',
+  maxMessages: 'maxMessages',
+  messageCount: 'messageCount',
+  lastSentAt: 'lastSentAt',
+  nextScheduledFor: 'nextScheduledFor',
+  status: 'status',
   createdAt: 'createdAt'
 };
 
@@ -143,7 +148,11 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.LeadStatus = exports.$Enums.LeadStatus = {
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
 
 exports.Prisma.ModelName = {
   Lead: 'Lead'

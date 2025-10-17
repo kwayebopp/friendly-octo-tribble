@@ -20,6 +20,24 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 export type Lead = $Result.DefaultSelection<Prisma.$LeadPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const LeadStatus: {
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus]
+
+}
+
+export type LeadStatus = $Enums.LeadStatus
+
+export const LeadStatus: typeof $Enums.LeadStatus
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -866,8 +884,20 @@ export namespace Prisma {
 
   export type AggregateLead = {
     _count: LeadCountAggregateOutputType | null
+    _avg: LeadAvgAggregateOutputType | null
+    _sum: LeadSumAggregateOutputType | null
     _min: LeadMinAggregateOutputType | null
     _max: LeadMaxAggregateOutputType | null
+  }
+
+  export type LeadAvgAggregateOutputType = {
+    maxMessages: number | null
+    messageCount: number | null
+  }
+
+  export type LeadSumAggregateOutputType = {
+    maxMessages: number | null
+    messageCount: number | null
   }
 
   export type LeadMinAggregateOutputType = {
@@ -876,6 +906,11 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     notes: string | null
+    maxMessages: number | null
+    messageCount: number | null
+    lastSentAt: Date | null
+    nextScheduledFor: Date | null
+    status: $Enums.LeadStatus | null
     createdAt: Date | null
   }
 
@@ -885,6 +920,11 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     notes: string | null
+    maxMessages: number | null
+    messageCount: number | null
+    lastSentAt: Date | null
+    nextScheduledFor: Date | null
+    status: $Enums.LeadStatus | null
     createdAt: Date | null
   }
 
@@ -894,10 +934,25 @@ export namespace Prisma {
     email: number
     phone: number
     notes: number
+    maxMessages: number
+    messageCount: number
+    lastSentAt: number
+    nextScheduledFor: number
+    status: number
     createdAt: number
     _all: number
   }
 
+
+  export type LeadAvgAggregateInputType = {
+    maxMessages?: true
+    messageCount?: true
+  }
+
+  export type LeadSumAggregateInputType = {
+    maxMessages?: true
+    messageCount?: true
+  }
 
   export type LeadMinAggregateInputType = {
     id?: true
@@ -905,6 +960,11 @@ export namespace Prisma {
     email?: true
     phone?: true
     notes?: true
+    maxMessages?: true
+    messageCount?: true
+    lastSentAt?: true
+    nextScheduledFor?: true
+    status?: true
     createdAt?: true
   }
 
@@ -914,6 +974,11 @@ export namespace Prisma {
     email?: true
     phone?: true
     notes?: true
+    maxMessages?: true
+    messageCount?: true
+    lastSentAt?: true
+    nextScheduledFor?: true
+    status?: true
     createdAt?: true
   }
 
@@ -923,6 +988,11 @@ export namespace Prisma {
     email?: true
     phone?: true
     notes?: true
+    maxMessages?: true
+    messageCount?: true
+    lastSentAt?: true
+    nextScheduledFor?: true
+    status?: true
     createdAt?: true
     _all?: true
   }
@@ -965,6 +1035,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: LeadAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LeadSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: LeadMinAggregateInputType
@@ -995,6 +1077,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: LeadCountAggregateInputType | true
+    _avg?: LeadAvgAggregateInputType
+    _sum?: LeadSumAggregateInputType
     _min?: LeadMinAggregateInputType
     _max?: LeadMaxAggregateInputType
   }
@@ -1005,8 +1089,15 @@ export namespace Prisma {
     email: string
     phone: string
     notes: string | null
+    maxMessages: number
+    messageCount: number
+    lastSentAt: Date | null
+    nextScheduledFor: Date | null
+    status: $Enums.LeadStatus
     createdAt: Date
     _count: LeadCountAggregateOutputType | null
+    _avg: LeadAvgAggregateOutputType | null
+    _sum: LeadSumAggregateOutputType | null
     _min: LeadMinAggregateOutputType | null
     _max: LeadMaxAggregateOutputType | null
   }
@@ -1031,6 +1122,11 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     notes?: boolean
+    maxMessages?: boolean
+    messageCount?: boolean
+    lastSentAt?: boolean
+    nextScheduledFor?: boolean
+    status?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["lead"]>
 
@@ -1040,6 +1136,11 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     notes?: boolean
+    maxMessages?: boolean
+    messageCount?: boolean
+    lastSentAt?: boolean
+    nextScheduledFor?: boolean
+    status?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["lead"]>
 
@@ -1049,6 +1150,11 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     notes?: boolean
+    maxMessages?: boolean
+    messageCount?: boolean
+    lastSentAt?: boolean
+    nextScheduledFor?: boolean
+    status?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["lead"]>
 
@@ -1058,10 +1164,15 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     notes?: boolean
+    maxMessages?: boolean
+    messageCount?: boolean
+    lastSentAt?: boolean
+    nextScheduledFor?: boolean
+    status?: boolean
     createdAt?: boolean
   }
 
-  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "notes" | "createdAt", ExtArgs["result"]["lead"]>
+  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "notes" | "maxMessages" | "messageCount" | "lastSentAt" | "nextScheduledFor" | "status" | "createdAt", ExtArgs["result"]["lead"]>
 
   export type $LeadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Lead"
@@ -1072,6 +1183,11 @@ export namespace Prisma {
       email: string
       phone: string
       notes: string | null
+      maxMessages: number
+      messageCount: number
+      lastSentAt: Date | null
+      nextScheduledFor: Date | null
+      status: $Enums.LeadStatus
       createdAt: Date
     }, ExtArgs["result"]["lead"]>
     composites: {}
@@ -1501,6 +1617,11 @@ export namespace Prisma {
     readonly email: FieldRef<"Lead", 'String'>
     readonly phone: FieldRef<"Lead", 'String'>
     readonly notes: FieldRef<"Lead", 'String'>
+    readonly maxMessages: FieldRef<"Lead", 'Int'>
+    readonly messageCount: FieldRef<"Lead", 'Int'>
+    readonly lastSentAt: FieldRef<"Lead", 'DateTime'>
+    readonly nextScheduledFor: FieldRef<"Lead", 'DateTime'>
+    readonly status: FieldRef<"Lead", 'LeadStatus'>
     readonly createdAt: FieldRef<"Lead", 'DateTime'>
   }
     
@@ -1888,6 +2009,11 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     notes: 'notes',
+    maxMessages: 'maxMessages',
+    messageCount: 'messageCount',
+    lastSentAt: 'lastSentAt',
+    nextScheduledFor: 'nextScheduledFor',
+    status: 'status',
     createdAt: 'createdAt'
   };
 
@@ -1938,6 +2064,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -1952,16 +2092,30 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'LeadStatus'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type EnumLeadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LeadStatus'>
     
 
 
   /**
-   * Reference to a field of type 'Int[]'
+   * Reference to a field of type 'LeadStatus[]'
    */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+  export type ListEnumLeadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LeadStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -1977,6 +2131,11 @@ export namespace Prisma {
     email?: StringFilter<"Lead"> | string
     phone?: StringFilter<"Lead"> | string
     notes?: StringNullableFilter<"Lead"> | string | null
+    maxMessages?: IntFilter<"Lead"> | number
+    messageCount?: IntFilter<"Lead"> | number
+    lastSentAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    nextScheduledFor?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    status?: EnumLeadStatusFilter<"Lead"> | $Enums.LeadStatus
     createdAt?: DateTimeFilter<"Lead"> | Date | string
   }
 
@@ -1986,6 +2145,11 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     notes?: SortOrderInput | SortOrder
+    maxMessages?: SortOrder
+    messageCount?: SortOrder
+    lastSentAt?: SortOrderInput | SortOrder
+    nextScheduledFor?: SortOrderInput | SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -1998,6 +2162,11 @@ export namespace Prisma {
     NOT?: LeadWhereInput | LeadWhereInput[]
     name?: StringFilter<"Lead"> | string
     notes?: StringNullableFilter<"Lead"> | string | null
+    maxMessages?: IntFilter<"Lead"> | number
+    messageCount?: IntFilter<"Lead"> | number
+    lastSentAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    nextScheduledFor?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    status?: EnumLeadStatusFilter<"Lead"> | $Enums.LeadStatus
     createdAt?: DateTimeFilter<"Lead"> | Date | string
   }, "id" | "email" | "phone">
 
@@ -2007,10 +2176,17 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     notes?: SortOrderInput | SortOrder
+    maxMessages?: SortOrder
+    messageCount?: SortOrder
+    lastSentAt?: SortOrderInput | SortOrder
+    nextScheduledFor?: SortOrderInput | SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     _count?: LeadCountOrderByAggregateInput
+    _avg?: LeadAvgOrderByAggregateInput
     _max?: LeadMaxOrderByAggregateInput
     _min?: LeadMinOrderByAggregateInput
+    _sum?: LeadSumOrderByAggregateInput
   }
 
   export type LeadScalarWhereWithAggregatesInput = {
@@ -2022,6 +2198,11 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Lead"> | string
     phone?: StringWithAggregatesFilter<"Lead"> | string
     notes?: StringNullableWithAggregatesFilter<"Lead"> | string | null
+    maxMessages?: IntWithAggregatesFilter<"Lead"> | number
+    messageCount?: IntWithAggregatesFilter<"Lead"> | number
+    lastSentAt?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
+    nextScheduledFor?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
+    status?: EnumLeadStatusWithAggregatesFilter<"Lead"> | $Enums.LeadStatus
     createdAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
   }
 
@@ -2031,6 +2212,11 @@ export namespace Prisma {
     email: string
     phone: string
     notes?: string | null
+    maxMessages?: number
+    messageCount?: number
+    lastSentAt?: Date | string | null
+    nextScheduledFor?: Date | string | null
+    status?: $Enums.LeadStatus
     createdAt?: Date | string
   }
 
@@ -2040,6 +2226,11 @@ export namespace Prisma {
     email: string
     phone: string
     notes?: string | null
+    maxMessages?: number
+    messageCount?: number
+    lastSentAt?: Date | string | null
+    nextScheduledFor?: Date | string | null
+    status?: $Enums.LeadStatus
     createdAt?: Date | string
   }
 
@@ -2049,6 +2240,11 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    maxMessages?: IntFieldUpdateOperationsInput | number
+    messageCount?: IntFieldUpdateOperationsInput | number
+    lastSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextScheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2058,6 +2254,11 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    maxMessages?: IntFieldUpdateOperationsInput | number
+    messageCount?: IntFieldUpdateOperationsInput | number
+    lastSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextScheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2067,6 +2268,11 @@ export namespace Prisma {
     email: string
     phone: string
     notes?: string | null
+    maxMessages?: number
+    messageCount?: number
+    lastSentAt?: Date | string | null
+    nextScheduledFor?: Date | string | null
+    status?: $Enums.LeadStatus
     createdAt?: Date | string
   }
 
@@ -2076,6 +2282,11 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    maxMessages?: IntFieldUpdateOperationsInput | number
+    messageCount?: IntFieldUpdateOperationsInput | number
+    lastSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextScheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2085,6 +2296,11 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    maxMessages?: IntFieldUpdateOperationsInput | number
+    messageCount?: IntFieldUpdateOperationsInput | number
+    lastSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextScheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2118,6 +2334,35 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type EnumLeadStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.LeadStatus | EnumLeadStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumLeadStatusFilter<$PrismaModel> | $Enums.LeadStatus
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -2140,7 +2385,17 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     notes?: SortOrder
+    maxMessages?: SortOrder
+    messageCount?: SortOrder
+    lastSentAt?: SortOrder
+    nextScheduledFor?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type LeadAvgOrderByAggregateInput = {
+    maxMessages?: SortOrder
+    messageCount?: SortOrder
   }
 
   export type LeadMaxOrderByAggregateInput = {
@@ -2149,6 +2404,11 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     notes?: SortOrder
+    maxMessages?: SortOrder
+    messageCount?: SortOrder
+    lastSentAt?: SortOrder
+    nextScheduledFor?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2158,7 +2418,17 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     notes?: SortOrder
+    maxMessages?: SortOrder
+    messageCount?: SortOrder
+    lastSentAt?: SortOrder
+    nextScheduledFor?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type LeadSumOrderByAggregateInput = {
+    maxMessages?: SortOrder
+    messageCount?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -2197,6 +2467,46 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumLeadStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LeadStatus | EnumLeadStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumLeadStatusWithAggregatesFilter<$PrismaModel> | $Enums.LeadStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLeadStatusFilter<$PrismaModel>
+    _max?: NestedEnumLeadStatusFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -2217,6 +2527,22 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type EnumLeadStatusFieldUpdateOperationsInput = {
+    set?: $Enums.LeadStatus
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -2251,6 +2577,35 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumLeadStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.LeadStatus | EnumLeadStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumLeadStatusFilter<$PrismaModel> | $Enums.LeadStatus
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -2279,17 +2634,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -2316,6 +2660,57 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumLeadStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LeadStatus | EnumLeadStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumLeadStatusWithAggregatesFilter<$PrismaModel> | $Enums.LeadStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLeadStatusFilter<$PrismaModel>
+    _max?: NestedEnumLeadStatusFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {

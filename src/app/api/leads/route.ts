@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
+import { createQueue, sendMessage, createQueueMessage } from "@/lib/queue";
 
 const leadSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -8,6 +9,123 @@ const leadSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   notes: z.string().optional(),
 });
+
+// Get daily max from environment variable
+const DAILY_MAX = parseInt(process.env.DAILY_MAX || "100");
+
+/**
+ * Get the number of messages already sent today across all leads
+ */
+async function getTodayMessageCount(): Promise<number> {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const count = await prisma.lead.count({
+    where: {
+      lastSentAt: {
+        gte: today,
+        lt: tomorrow,
+      },
+    },
+  });
+
+  return count;
+}
+
+/**
+ * Find the next available day with capacity for a message
+ */
+async function findNextAvailableDay(startDate: Date = new Date()): Promise<Date> {
+  let currentDate = new Date(startDate);
+  currentDate.setHours(0, 0, 0, 0);
+
+  // Check up to 30 days in the future
+  for (let i = 0; i < 30; i++) {
+    const dayStart = new Date(currentDate);
+    const dayEnd = new Date(currentDate);
+    dayEnd.setDate(dayEnd.getDate() + 1);
+
+    const messageCount = await prisma.lead.count({
+      where: {
+        lastSentAt: {
+          gte: dayStart,
+          lt: dayEnd,
+        },
+      },
+    });
+
+    if (messageCount < DAILY_MAX) {
+      return currentDate;
+    }
+
+    // Move to next day
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  // If no capacity found in 30 days, return the 30th day
+  return currentDate;
+}
+
+/**
+ * Get queue name for a specific date
+ * In test mode, prefix with "test-"
+ */
+function getQueueNameForDate(date: Date): string {
+  const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+  const queueName = `drip-messages-${dateStr}`;
+
+  // Prefix with "test-" when in test mode
+  if (process.env.NODE_ENV === 'test' || process.env.NEXT_PHASE === 'test') {
+    return `test-${queueName}`;
+  }
+
+  return queueName;
+}
+
+/**
+ * Schedule lead messages across multiple days
+ */
+async function scheduleLeadMessages(lead: any): Promise<void> {
+  const today = new Date();
+  const maxMessages = lead.maxMessages || 5;
+
+  // Schedule messages for each day
+  for (let messageNumber = 1; messageNumber <= maxMessages; messageNumber++) {
+    const scheduledDate = new Date(today);
+    scheduledDate.setDate(scheduledDate.getDate() + messageNumber - 1);
+
+    // Find next available day with capacity
+    const availableDate = await findNextAvailableDay(scheduledDate);
+    const queueName = getQueueNameForDate(availableDate);
+
+    // Ensure queue exists
+    await createQueue(queueName);
+
+    // Create message
+    const message = createQueueMessage(
+      lead.id,
+      lead.email,
+      messageNumber,
+      availableDate.toISOString().split('T')[0]
+    );
+
+    // Send message to queue
+    await sendMessage(queueName, message);
+
+    console.log(`Scheduled message ${messageNumber} for ${lead.email} on ${availableDate.toISOString().split('T')[0]}`);
+  }
+
+  // Update lead with next scheduled date
+  await prisma.lead.update({
+    where: { id: lead.id },
+    data: {
+      status: "ACTIVE",
+      nextScheduledFor: today,
+    },
+  });
+}
 
 function handleZodError(error: z.ZodError): Response {
   return NextResponse.json(
@@ -86,10 +204,23 @@ export async function POST(request: NextRequest): Promise<Response> {
         email: validatedData.email,
         phone: validatedData.phone,
         notes: validatedData.notes,
+        maxMessages: 5, // Default to 5 messages
+        messageCount: 0,
+        status: "ACTIVE",
       },
     });
 
     console.log("New lead saved to database:", lead);
+
+    // Schedule messages across multiple days
+    try {
+      await scheduleLeadMessages(lead);
+      console.log(`Successfully scheduled ${lead.maxMessages} messages for ${lead.email}`);
+    } catch (scheduleError) {
+      console.error("Error scheduling messages:", scheduleError);
+      // Don't fail the lead creation if scheduling fails
+      // The lead is still created and can be processed later
+    }
 
     return NextResponse.json(
       {
@@ -101,6 +232,8 @@ export async function POST(request: NextRequest): Promise<Response> {
           email: lead.email,
           phone: lead.phone,
           notes: lead.notes,
+          maxMessages: lead.maxMessages,
+          status: lead.status,
           createdAt: lead.createdAt,
         },
       },

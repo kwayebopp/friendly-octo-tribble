@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -15,12 +15,24 @@ datasource db {
 }
 
 model Lead {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  phone     String   @unique
-  notes     String?
-  createdAt DateTime @default(now())
+  id               String    @id @default(cuid())
+  name             String
+  email            String    @unique
+  phone            String    @unique
+  notes            String?
+  maxMessages      Int       @default(5)
+  messageCount     Int       @default(0)
+  lastSentAt       DateTime?
+  nextScheduledFor DateTime?
+  status           LeadStatus @default(ACTIVE)
+  createdAt        DateTime  @default(now())
 
+  @@index([nextScheduledFor, status])
   @@map("leads")
+}
+
+enum LeadStatus {
+  ACTIVE
+  COMPLETED
+  FAILED
 }

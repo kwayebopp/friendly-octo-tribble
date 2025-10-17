@@ -32,20 +32,20 @@ export const expectResponseStructure = (response: any, expectedStatus: number) =
   expect(response.headers.get('content-type')).toContain('application/json');
 };
 
-export const expectSuccessResponse = (response: any, expectedData: any) => {
+export const expectSuccessResponse = async (response: any, expectedData: any) => {
   expectResponseStructure(response, 201);
-  const data = response.json();
-  expect(data).resolves.toMatchObject({
+  const data = await response.json();
+  expect(data).toMatchObject({
     success: true,
     message: 'Lead submitted successfully',
     data: expect.objectContaining(expectedData),
   });
 };
 
-export const expectErrorResponse = (response: any, expectedStatus: number, expectedMessage?: string) => {
+export const expectErrorResponse = async (response: any, expectedStatus: number, expectedMessage?: string) => {
   expectResponseStructure(response, expectedStatus);
-  const data = response.json();
-  expect(data).resolves.toMatchObject({
+  const data = await response.json();
+  expect(data).toMatchObject({
     success: false,
     message: expectedMessage || expect.any(String),
   });

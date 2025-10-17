@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
 import { POST } from '../../../app/api/leads/route';
-import { cleanupDatabase, closeTestDatabase, getTestPrisma } from '../../setup/test-db';
+import { cleanupDatabase, cleanupQueues, closeTestDatabase, getTestPrisma } from '../../setup/test-db';
 import {
   createMockRequest,
   createValidLeadData,
@@ -15,16 +15,19 @@ describe('Leads API Integration Tests', () => {
   beforeAll(async () => {
     // Ensure test database is clean
     await cleanupDatabase();
+    await cleanupQueues();
   });
 
   afterAll(async () => {
     await cleanupDatabase();
+    await cleanupQueues();
     await closeTestDatabase();
   });
 
   beforeEach(async () => {
     // Clean up before each test
     await cleanupDatabase();
+    await cleanupQueues();
   });
 
   describe('POST /api/leads', () => {
@@ -34,7 +37,7 @@ describe('Leads API Integration Tests', () => {
 
       const response = await POST(request);
 
-      expectSuccessResponse(response, {
+      await expectSuccessResponse(response, {
         name: validData.name,
         email: validData.email,
         phone: validData.phone,
@@ -56,7 +59,7 @@ describe('Leads API Integration Tests', () => {
 
       const response = await POST(request);
 
-      expectSuccessResponse(response, {
+      await expectSuccessResponse(response, {
         name: validData.name,
         email: validData.email,
         phone: validData.phone,
@@ -127,7 +130,7 @@ describe('Leads API Integration Tests', () => {
 
       const response = await POST(duplicateRequest);
 
-      expectErrorResponse(response, 422, 'The email address is already in use.');
+      await expectErrorResponse(response, 422, 'The email address is already in use.');
     });
 
     it('should reject lead with duplicate phone', async () => {
@@ -145,7 +148,7 @@ describe('Leads API Integration Tests', () => {
 
       const response = await POST(duplicateRequest);
 
-      expectErrorResponse(response, 422, 'The phone number is already in use');
+      await expectErrorResponse(response, 422, 'The phone number is already in use');
     });
 
     it('should return 418 teapot error when notes contain "coffee"', async () => {
@@ -156,7 +159,7 @@ describe('Leads API Integration Tests', () => {
 
       const response = await POST(request);
 
-      expectErrorResponse(response, 418, "I'm a teapot. No coffee for you!");
+      await expectErrorResponse(response, 418, "I'm a teapot. No coffee for you!");
     });
 
     it('should return 418 teapot error when notes contain "coffee" (case insensitive)', async () => {
@@ -167,7 +170,7 @@ describe('Leads API Integration Tests', () => {
 
       const response = await POST(request);
 
-      expectErrorResponse(response, 418, "I'm a teapot. No coffee for you!");
+      await expectErrorResponse(response, 418, "I'm a teapot. No coffee for you!");
     });
 
     it('should handle malformed JSON request body', async () => {
@@ -181,7 +184,7 @@ describe('Leads API Integration Tests', () => {
 
       const response = await POST(request as any);
 
-      expectErrorResponse(response, 500);
+      await expectErrorResponse(response, 500);
     });
 
     it('should handle missing request body', async () => {
@@ -194,7 +197,7 @@ describe('Leads API Integration Tests', () => {
 
       const response = await POST(request as any);
 
-      expectErrorResponse(response, 500);
+      await expectErrorResponse(response, 500);
     });
 
     it('should create multiple leads with different data', async () => {
@@ -219,7 +222,7 @@ describe('Leads API Integration Tests', () => {
       for (const lead of leads) {
         const request = createMockRequest(lead);
         const response = await POST(request);
-        expectSuccessResponse(response, {
+        await expectSuccessResponse(response, {
           name: lead.name,
           email: lead.email,
           phone: lead.phone,
