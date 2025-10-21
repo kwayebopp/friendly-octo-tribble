@@ -47,7 +47,15 @@ Lead Submission → Quota Check → Queue Scheduling → Message Processing
 
 ### Environment Variables
 
-Create a `.env` file in the project root:
+Sample environment files are provided for both development and testing. Copy them to create your environment configuration:
+
+```bash
+# Copy sample files
+cp .sample.env .env
+cp .sample.env.test .env.test
+```
+
+The `.env` file should contain:
 
 ```bash
 # Database
@@ -69,24 +77,30 @@ PGMQ_URL="http://localhost:8080/api/v1"
    npm install
    ```
 
-2. **Start the infrastructure:**
+2. **Set up environment files:**
+   ```bash
+   cp .sample.env .env
+   cp .sample.env.test .env.test
+   ```
+
+3. **Start the infrastructure:**
    ```bash
    # Start PostgreSQL + PGMQ services
    npm run docker:up
    ```
 
-3. **Set up the database:**
+4. **Set up the database:**
    ```bash
    # Run database migrations
    npx prisma migrate deploy
    ```
 
-4. **Start the development server:**
+5. **Start the development server:**
    ```bash
    npm run dev
    ```
 
-5. **Open the application:**
+6. **Open the application:**
    - Frontend: http://localhost:3000
    - PGMQ API: http://localhost:8080
 
